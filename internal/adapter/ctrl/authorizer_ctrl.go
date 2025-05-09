@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"stone/cards/authorizer/internal/adapter/ctrl/schema"
 	"stone/cards/authorizer/internal/domain/entities"
+	"stone/cards/authorizer/internal/domain/errors"
 
 	"github.com/google/uuid"
 )
@@ -30,7 +31,7 @@ func (a AuthorizerCtrl) Authorize(payload json.RawMessage) schema.AuthorizerResp
 	if err != nil {
 		return schema.AuthorizerResponse{
 			Status: "reject",
-			Error:  "invalid payload",
+			Error:  errors.ErrInvalidPayload.Error(),
 		}
 	}
 
