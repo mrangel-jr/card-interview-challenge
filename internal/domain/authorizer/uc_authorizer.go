@@ -25,7 +25,7 @@ type AuthorizerUC struct {
 }
 
 func (a AuthorizerUC) Authorize(authorize entities.Authorizer) (uuid.UUID, error) {
-	// ... implements here
+	a.authorizerRepo.InsertAuthorizer(authorize)
 
 	return uuid.New(), nil
 }

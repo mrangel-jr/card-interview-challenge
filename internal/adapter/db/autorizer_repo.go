@@ -7,13 +7,17 @@ import (
 )
 
 type AuthorizerRepository struct {
+	db map[string]entities.Authorizer
 }
 
 func (r *AuthorizerRepository) InsertAuthorizer(authorizer entities.Authorizer) (uuid.UUID, error) {
 	// ... implements here
-	return uuid.New(), nil
+	uuid := uuid.New()
+	r.db[uuid.String()] = authorizer
+	return uuid, nil
 }
 
 func NewAuthorizerRepository() *AuthorizerRepository {
-	return &AuthorizerRepository{}
+	db := make(map[string]entities.Authorizer)
+	return &AuthorizerRepository{db: db}
 }

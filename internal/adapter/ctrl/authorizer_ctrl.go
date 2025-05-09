@@ -17,8 +17,27 @@ type AuthorizerCtrl struct {
 }
 
 func (a AuthorizerCtrl) Authorize(payload json.RawMessage) schema.AuthorizerResponse {
-	// ... implements here
-	return schema.AuthorizerResponse{}
+	customTransaction, err := entities.UnmarshalTransaction(payload)
+	if err != nil {
+		return schema.AuthorizerResponse{
+			Status: "rejected",
+			Error:  err.Error(),
+		}
+	}
+
+	uuid, err := a.authorizerUC.Authorize(customTransaction)
+
+	if err != nil {
+		return schema.AuthorizerResponse{
+			Status: "reject",
+			Error:  "invalid payload",
+		}
+	}
+
+	return schema.AuthorizerResponse{
+		Status:      "approved",
+		AuthorizeID: uuid.String(),
+	}
 }
 
 func NewAuthorizerCtrl(authorizerUC AuthorizerUseCase) AuthorizerCtrl {
