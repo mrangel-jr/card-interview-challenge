@@ -10,8 +10,10 @@ type Risk struct {
 	Timestamp  time.Time
 }
 
+// Tipo de Risco
 type RiskReason = string
 
+// Riscos comuns
 const (
 	RiskHighAmount  RiskReason = "high amount"
 	RiskNotStandard RiskReason = "not standard"
