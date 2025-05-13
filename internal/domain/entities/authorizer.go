@@ -33,10 +33,6 @@ func UnmarshalTransaction(data []byte) (Authorizer, error) {
 		return Authorizer{}, errors.ErrInvalidTimestamp
 	}
 
-	if parsedTime.After(time.Now()) {
-		return Authorizer{}, errors.ErrInTheFuture
-	}
-
 	return Authorizer{
 		CardNumber: shadow.CardNumber,
 		Amount:     shadow.Amount,

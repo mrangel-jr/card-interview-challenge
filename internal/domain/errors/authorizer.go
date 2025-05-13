@@ -1,9 +1,17 @@
 package errors
 
-import "errors"
+// AuthorizerError representa um erro de validação
+type AuthorizerError struct {
+	Message string
+}
 
+func (e AuthorizerError) Error() string {
+	return e.Message
+}
+
+// Erros comuns
 var (
-	ErrInvalidTimestamp = errors.New("timestamp not valid")
-	ErrInTheFuture      = errors.New("timestamp on future")
-	ErrInvalidPayload   = errors.New("invalid payload")
+	ErrInvalidPayload   = AuthorizerError{"invalid payload"}
+	ErrInvalidTimestamp = AuthorizerError{"timestamp not valid"}
+	ErrFutureTimestamp  = AuthorizerError{"timestamp on future"}
 )

@@ -2,6 +2,7 @@ package ctrl
 
 import (
 	"encoding/json"
+	"fmt"
 	"stone/cards/authorizer/internal/adapter/ctrl/schema"
 	"stone/cards/authorizer/internal/adapter/db"
 	"stone/cards/authorizer/internal/domain/authorizer"
@@ -167,23 +168,21 @@ func TestAuthorizerCtrlEx2(t *testing.T) {
 		},
 		{
 			name:    "Test 4",
-			payload: `{"card_number":"4111111111111111","amount": 100.50,"currency": "USD","merchant":"Amazon","timestamp":"2025-01-17T10:00:00Z"}`,
+			payload: fmt.Sprintf(`{"card_number":"4111111111111111","amount": 100.50,"currency": "USD","merchant":"Amazon","timestamp":"%v"}`, time.Now().UTC().Format(time.RFC3339)),
 			init: func() AuthorizerCtrl {
-				authRepo := db.NewAuthorizerRepository()
-				for i := 0; i < 10; i++ {
-					authRepo.InsertAuthorizer(entities.Authorizer{
+				riskRepo := db.NewRiskRepository()
+				for i := 0; i < 5; i++ {
+					entity := entities.Authorizer{
 						CardNumber: "4111111111111111",
-						Amount:     100.50,
-						Currency:   "USD",
-						Merchant:   "Amazon",
 						Timestamp:  time.Now().Add(-30 * time.Second),
-					})
+					}
+					riskRepo.AddCardTransaction(entity.CardNumber, entity.Timestamp)
 				}
 
 				return NewAuthorizerCtrl(
 					authorizer.NewAuthorizerUC(
-						authRepo,
-						db.NewRiskRepository(),
+						db.NewAuthorizerRepository(),
+						riskRepo,
 					),
 				)
 			},
@@ -206,5 +205,4 @@ func TestAuthorizerCtrlEx2(t *testing.T) {
 			tt.assertFn(t, tt.init().Authorize([]byte(tt.payload)))
 		})
 	}
-
 }
